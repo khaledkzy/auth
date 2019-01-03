@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +14,8 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.16.4",
     "volleyball": "^1.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
   }
 }
