@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 
 const app = express();
-const auth = require('./auth/index');
+const auth = require('./auth');
 app.use(volleyball);
 app.use(bodyParser.json());
 
@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use('/auth', auth)
+app.use('/auth', auth);
 
 function notFound(req, res, next) {
     res.status(404);
