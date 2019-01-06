@@ -1,6 +1,7 @@
 const express = require('express');
 const volleyball = require('volleyball');
 const bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 
 
 
@@ -8,6 +9,8 @@ const app = express();
 const auth = require('./auth');
 app.use(volleyball);
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser(process.env.COOKIE_SECRET || 'SecretEncryption'));
 
 app.get('/', (req, res) => {
     res.json({

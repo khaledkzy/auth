@@ -34,7 +34,7 @@ router.post('/signup', (req,res,next)=> {
                 const err = new Error('This username already exists');
                 next(err);
             } else {
-                bcrypt.hash(req.body.password,4).then(hashedPassword => {
+                bcrypt.hash(req.body.password.trim(),4).then(hashedPassword => {
                     // res.json({hashedPassword});
                     const newUser = {
                         username: req.body.username,
@@ -48,6 +48,50 @@ router.post('/signup', (req,res,next)=> {
     } else {
         next(result.error);
     }
+});
+
+router.post('/login', (req,res,next)=> {
+    const result = Joi.validate(req.body, schema);
+    if (result.error === null) {
+        users.findOne({username: req.body.username}).then(user => {
+
+            // if the user is undefined, username is not in the db, otherwise it is a duplicate
+            bcrypt.compare(req.body.password, user.password)
+            // This return result === true if the passwords matched
+                .then((result) => {
+                    if(result){
+                        // _id is the id given by mongoDB
+                        res.cookie('user_id', user._id, {
+                            httpOnly: true,
+                           // secure: true,
+                            signed: true
+                        });
+                        res.json({
+                            result,
+                            message: 'logged in'});
+                    }
+                    else {
+                        res.json({
+                            result,
+                            message: 'Invalid Password, If you forget your password you can reset here.'});}
+                })
+                .catch(err => res.json(err));
+
+        })
+            .catch(err => res.json({err, message: 'Username Doesn\'t exists'}));
+    } else {
+        next(result.error);
+    }
+});
+
+router.get('/:username', (req,res,next)=> {
+    users.findOne({username: req.params.username}).then(data => {
+        if(data === null){
+            res.json('User Doesn\'t exisits');
+        }else {
+            res.json(data);
+        }
+    });
 });
 
 module.exports = router;
